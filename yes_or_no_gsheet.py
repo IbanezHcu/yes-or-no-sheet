@@ -151,8 +151,9 @@ elif state["phase"] == "result":
     else:
         st.success("🎉 เกมจบแล้ว!")
         funny_titles = ["แชมป์ผู้รู้ใจคำลับ", "เทพตรรกะ 3000", "นักสืบสายฮา"]
-        st.markdown(f"## 🏆 ผู้ชนะคือ: {max(state['scores'], key=state['scores'].get'])} 🥳")
-        st.caption(f"{funny_titles[state['scores'][max(state['scores'], key=state['scores'].get'])] % 3]}")
+        winner = max(state['scores'], key=state['scores'].get)
+        st.markdown(f"## 🏆 ผู้ชนะคือ: {winner} 🥳")
+        st.caption(f"{funny_titles[state['scores'][winner] % 3]}")
         if st.button("🔁 เริ่มใหม่"):
             sheet.clear()
             sheet.append_row(["key", "value"])
