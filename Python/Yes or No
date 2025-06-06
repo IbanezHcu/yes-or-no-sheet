@@ -1,0 +1,22 @@
+def load_username():
+    try:
+        with open("username.txt", "r") as f: # F คือไฟล์ที่เปิดอยู่
+            return f.read().strip() #Return ส่งค่านี้ออกจากฟังก์ชั่น strip ตัดช่องว่าง ขึ้นบรรทัดใหม่ 
+    except FileNotFoundError: #ถ้าไฟล์ username.txt ไม่เจอชื่อ  จะกระโดดมาทำตรงนี้แทน
+        return None # ส่งค่า none ไปแทน
+    
+    def save_username(name):
+        with open("username.txt", "w") as f:
+            f.write(name)
+
+            username = load_username()
+            if username:
+                print(f"ยินดีต้อนรับกลับมา, {username}!")
+                change = input("คุณต้องการเปลี่ยนชื่อไหม ? (y/n) : ")
+                if change.lower()=="y":
+                    username = input("ป้อนชื่อใหม่ของคุณ : ")
+                    save_username(username)
+                else:
+                    username = input("กรุณาใส่ชื่อครั้งแรก : ")
+                    save_username(username)
+                    print(f"ชื่อของคุณคือ : {username}")
