@@ -6,15 +6,16 @@ from google.oauth2.service_account import Credentials
 def connect_sheet():
     scope = [
         "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive"  # ✅ เพิ่มสิทธิ์เข้าถึง Google Drive
+        "https://www.googleapis.com/auth/drive"
     ]
     creds = Credentials.from_service_account_info(
         st.secrets["gsheets"],
         scopes=scope
     )
     client = gspread.authorize(creds)
-    sheet = client.open_by_key("1pffDWgP4_JR9WUNcyqPK5FVR27yy5NTZWQX_V6daxT8").sheet1
+    
+    # ใช้ open_by_key เพื่อให้แม่นยำและเร็วกว่า
+    sheet = client.open_by_key("1KWTWLUIM_tMumZxUgFMKUHpU7iU4YtN4ezcz4IXxNvw").sheet1
     return sheet
 
-# เรียกใช้งาน
 sheet = connect_sheet()
