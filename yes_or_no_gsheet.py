@@ -4,13 +4,13 @@ import json
 from oauth2client.service_account import ServiceAccountCredentials
 
 # === CONNECT TO GOOGLE SHEET ===
-SHEET_NAME = "yes-or-no-game"
-creds_dict = st.secrets["gsheets"]
+SHEET_NAME = "yes-or-no-data"
+CREDENTIALS_PATH = "credentials.json"
 
 @st.cache_resource
 def connect_sheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(dict(creds_dict), scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_PATH, scope)
     client = gspread.authorize(creds)
     return client.open(SHEET_NAME).sheet1
 
