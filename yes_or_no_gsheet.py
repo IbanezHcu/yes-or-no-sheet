@@ -4,22 +4,16 @@ from google.oauth2.service_account import Credentials
 
 @st.cache_resource
 def connect_sheet():
-    scope = [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive"
-    ]
-
+    scope = ["https://www.googleapis.com/auth/spreadsheets"]
     creds = Credentials.from_service_account_info(
         st.secrets["gsheets"],
         scopes=scope
     )
-
     client = gspread.authorize(creds)
 
-    # เปิดโดยใช้ Spreadsheet ID
-    sheet = client.open_by_key("1PdfJSe1YZRYfIseGgKngjqzv_CrwpTddLcLoaKOLw3A").sheet1
+    # ✅ เปิดด้วย spreadsheetId โดยตรง ไม่ใช้ชื่อ
+    sheet = client.open_by_key("1pffDWgP4_JR9WUNcyqPK5FVR27yy5NTZWQX_V6daxT8").sheet1
     return sheet
 
-# ใช้งาน sheet
+# ทดลองเรียกใช้งาน
 sheet = connect_sheet()
-st.write(sheet.get_all_values())
