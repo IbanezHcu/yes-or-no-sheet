@@ -4,7 +4,8 @@ import json
 from oauth2client.service_account import ServiceAccountCredentials
 
 # === CONNECT TO GOOGLE SHEET ===
-SHEET_NAME = "yes-or-no-data"  # ตั้งชื่อให้ตรงกับ Google Sheet ที่สร้าง
+SHEET_NAME = "yes-or-no-data"
+CREDENTIALS_PATH = "utility-chimera-462014-j5-697d9dc3758e.json"  # ชื่อไฟล์ .json service account ที่ push ขึ้น Git แล้ว
 
 @st.cache_resource
 def connect_sheet():
@@ -12,21 +13,26 @@ def connect_sheet():
         "https://spreadsheets.google.com/feeds",
         "https://www.googleapis.com/auth/drive"
     ]
-    creds_dict = st.secrets["gsheets"]  # ดึง credentials จาก secrets
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_PATH, scope)
     client = gspread.authorize(creds)
-    return client.open(SHEET_NAME).sheet1
+    try:
+        spreadsheet = client.open(SHEET_NAME)
+        st.success("✅ เชื่อมต่อ Google Sheet สำเร็จ")
+        return spreadsheet.sheet1
+    except Exception as e:
+        st.error(f"❌ ไม่สามารถเปิดชีทชื่อ '{SHEET_NAME}' ได้")
+        st.exception(e)
+        return None
 
 sheet = connect_sheet()
 
 def read_state():
+    if not sheet:
+        return []
     records = sheet.get_all_records()
-    return {row["key"]: json.loads(row["value"]) for row in records}
+    st.write("📄 ข้อมูลทั้งหมดในชีท:", records)
+    return [{ 'key': row['key'], 'value': json.loads(row['value']) } for row in records]
 
-def write_state(state):
-    for key, val in state.items():
-        cell = sheet.find(key)
-        if cell:
-            sheet.update_cell(cell.row, 2, json.dumps(val))
-        else:
-            sheet.append_row([key, json.dumps(val)])
+# แสดงผลในหน้าแอป
+st.title("🎮 เกม ใช่หรือไม่ - ทดสอบ Google Sheet")
+read_state()
